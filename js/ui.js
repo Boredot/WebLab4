@@ -28,10 +28,14 @@ export function createWeatherDisplay(weatherData) {
         const date = createElement('p', 'forecast-date', new Date(forecast.date).toLocaleDateString('ru-RU'));
         const temp = createElement('p', 'forecast-temp', `${Math.round(forecast.temp_min)}°C / ${Math.round(forecast.temp_max)}°C`);
         const desc = createElement('p', 'forecast-desc', forecast.description);
+        const icon = createElement('img', 'forecast-icon');
+        icon.src = `https://openweathermap.org/img/wn/${forecast.icon}@2x.png`;
+        icon.alt = forecast.description;
 
         forecastItem.appendChild(date);
         forecastItem.appendChild(temp);
         forecastItem.appendChild(desc);
+        forecastItem.appendChild(icon);
         display.appendChild(forecastItem);
     });
 

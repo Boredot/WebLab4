@@ -35,7 +35,7 @@ function processWeatherData(data) {
 
     data.list.forEach(item => {
         const date = new Date(item.dt * 1000).toISOString().split('T')[0];
-        if (!forecasts[date] && (date === today || daysAdded < 2)) {
+        if (!forecasts[date] && (date === today || daysAdded <= 2)) {
             forecasts[date] = {
                 date: date,
                 temp_min: item.main.temp_min,

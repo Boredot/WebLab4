@@ -7,7 +7,7 @@ let currentCityWeather = null;
 let cityListData = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const appContainer = createAppContainer();
+    const appContainer = createAppContainer(); 
     const loader = createLoadingIndicator();
     appContainer.appendChild(loader);
     document.getElementById('app').appendChild(appContainer);
