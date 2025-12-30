@@ -1,0 +1,65 @@
+export function createElement(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+}
+
+export function createAppContainer() {
+    const container = createElement('div', 'app-container');
+    const header = createElement('h1', 'app-title', 'Прогноз погоды');
+    container.appendChild(header);
+    return container;
+}
+
+export function createLoadingIndicator() {
+    const loader = createElement('div', 'loading');
+    loader.textContent = 'Загрузка...';
+    return loader;
+}
+
+export function createWeatherDisplay(weatherData) {
+    const display = createElement('div', 'weather-display');
+    const title = createElement('h2', 'city-name', weatherData.name);
+    display.appendChild(title);
+
+    weatherData.forecasts.forEach(forecast => {
+        const forecastItem = createElement('div', 'forecast-item');
+        const date = createElement('p', 'forecast-date', new Date(forecast.date).toLocaleDateString('ru-RU'));
+        const temp = createElement('p', 'forecast-temp', `${Math.round(forecast.temp_min)}°C / ${Math.round(forecast.temp_max)}°C`);
+        const desc = createElement('p', 'forecast-desc', forecast.description);
+
+        forecastItem.appendChild(date);
+        forecastItem.appendChild(temp);
+        forecastItem.appendChild(desc);
+        display.appendChild(forecastItem);
+    });
+
+    return display;
+}
+
+export function createCityList(cities, onCitySelect, activeCityName) {
+    const list = createElement('div', 'city-list');
+    cities.forEach(city => {
+        const cityItem = createElement('div', 'city-item');
+        cityItem.textContent = city.name;
+        if (activeCityName && city.name === activeCityName) {
+            cityItem.classList.add('active');
+        }
+        cityItem.addEventListener('click', () => onCitySelect && onCitySelect(city));
+        list.appendChild(cityItem);
+    });
+    return list;
+}
+
+export function createRefreshButton(onClick) {
+    const button = createElement('button', 'refresh-btn', 'Обновить');
+    button.addEventListener('click', onClick);
+    return button;
+}
+
+export function createAddCityButton(onClick) {
+    const button = createElement('button', 'add-city-btn', 'Добавить город');
+    button.addEventListener('click', onClick);
+    return button;
+}
