@@ -1,13 +1,14 @@
-import { createAppContainer, createLoadingIndicator, createWeatherDisplay, createCityList, createRefreshButton, createAddCityButton, createElement as uiCreateElement } from './ui.js';
+import { createAppContainer, createLoadingIndicator, createWeatherDisplay, createCityList, createRefreshButton, createAddCityButton, showError, createElement as uiCreateElement } from './ui.js';
 import { getCurrentLocation } from './geolocation.js';
 import { getWeatherByCoords, getWeatherByCityName } from './api.js';
 import { saveState, loadState } from './storage.js';
+import { showAddCityModal } from './modal.js';
 
 let currentCityWeather = null;
 let cityListData = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const appContainer = createAppContainer(); 
+    const appContainer = createAppContainer();
     const loader = createLoadingIndicator();
     appContainer.appendChild(loader);
     document.getElementById('app').appendChild(appContainer);
@@ -35,14 +36,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderApp(appContainer);
 
     } catch (error) {
-        if (appContainer.contains(loader)) {
-            appContainer.removeChild(loader);
-        }
-
-        const errorElement = uiCreateElement('div', 'error-message', `Ошибка геолокации: ${error.message || 'Не удалось получить местоположение.'}`);
-        appContainer.appendChild(errorElement);
-
-        showCityInputForm(appContainer, errorElement);
+        appContainer.removeChild(loader);
+        const initialError = `Ошибка геолокации: ${error.message || 'Не удалось получить местоположение.'}`;
+        showAddCityModalWrapper(appContainer);
     }
 });
 
@@ -62,11 +58,39 @@ function renderApp(container) {
     }, currentCityWeather ? currentCityWeather.name : null);
     container.appendChild(cityList);
 
-    const refreshBtn = createRefreshButton(refreshWeather);
-    container.appendChild(refreshBtn);
+    const buttonsContainer = uiCreateElement('div', 'buttons-container');
 
-    const addCityBtn = createAddCityButton(() => console.log('adding new city'));
-    container.appendChild(addCityBtn);
+    const refreshBtn = createRefreshButton(refreshWeather);
+    buttonsContainer.appendChild(refreshBtn);
+
+    const addCityBtn = createAddCityButton(() => showAddCityModalWrapper(container));
+    buttonsContainer.appendChild(addCityBtn);
+
+    container.appendChild(buttonsContainer);
+}
+
+function showAddCityModalWrapper(container) {
+    const closeModalFunc = showAddCityModal(
+        async (cityName, errorDisplay) => {
+            try {
+                const nameToCheck = currentCityWeather?.isCurrentLocation ? currentCityWeather.originalName : cityName;
+                if (cityListData.some(c => (c.isCurrentLocation && c.originalName === nameToCheck) || (!c.isCurrentLocation && c.name === cityName))) {
+                    throw new Error('Город уже добавлен');
+                }
+
+                const weatherResult = await getWeatherByCityName(cityName);
+                cityListData.push(weatherResult);
+                saveState({ cities: cityListData });
+                renderApp(container);
+
+            } catch (err) {
+                showError(errorDisplay, err.message);
+                throw err;
+            }
+        },
+        () => {
+        }
+    );
 }
 
 async function refreshWeather() {

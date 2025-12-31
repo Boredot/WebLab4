@@ -13,8 +13,7 @@ export function createAppContainer() {
 }
 
 export function createLoadingIndicator() {
-    const loader = createElement('div', 'loading');
-    loader.textContent = 'Загрузка...';
+    const loader = createElement('div', 'loading', 'Загрузка...');
     return loader;
 }
 
@@ -66,4 +65,59 @@ export function createAddCityButton(onClick) {
     const button = createElement('button', 'add-city-btn', 'Добавить город');
     button.addEventListener('click', onClick);
     return button;
+}
+
+export function createCityInputForm(onSubmit, onCancel, onInput, autocompleteListElement = null) {
+    const form = createElement('form', 'city-input-form');
+    const inputContainer = createElement('div', 'input-container');
+    const input = createElement('input', 'city-input');
+    input.type = 'text';
+    input.placeholder = 'Введите название города...';
+    input.addEventListener('input', onInput);
+
+    const errorDiv = createElement('div', 'error-message');
+
+    const submitBtn = createElement('button', 'submit-btn', 'Добавить');
+    submitBtn.type = 'submit';
+    const cancelBtn = createElement('button', 'cancel-btn', 'Отмена');
+    cancelBtn.type = 'button';
+
+    inputContainer.appendChild(input);
+    if (autocompleteListElement) {
+        inputContainer.appendChild(autocompleteListElement);
+    }
+
+    form.appendChild(inputContainer);
+    form.appendChild(errorDiv);
+    form.appendChild(submitBtn);
+    form.appendChild(cancelBtn);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        onSubmit(input.value.trim(), errorDiv);
+    });
+
+    cancelBtn.addEventListener('click', onCancel);
+
+    return { form, input, errorDiv, inputContainer };
+}
+
+export function createAutocompleteList(items, onSelect) {
+    const list = createElement('ul', 'autocomplete-list');
+    items.forEach(item => {
+        const li = createElement('li', 'autocomplete-item', item);
+        li.addEventListener('click', () => onSelect(item));
+        list.appendChild(li);
+    });
+    return list;
+}
+
+export function showError(element, message) {
+    element.textContent = message;
+    element.style.display = 'block';
+}
+
+export function hideError(element) {
+    element.textContent = '';
+    element.style.display = 'none';
 }
