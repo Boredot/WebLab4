@@ -1,4 +1,4 @@
-import { createAppContainer, createLoadingIndicator, createWeatherDisplay, createCityList, createRefreshButton, createAddCityButton, showError, createElement as uiCreateElement } from './ui.js';
+import { createAppContainer, createLoadingIndicator, createWeatherDisplay, createCityList, createRefreshButton, createAddCityButton, createFooter, showError, createElement as uiCreateElement } from './ui.js';
 import { getCurrentLocation } from './geolocation.js';
 import { getWeatherByCoords, getWeatherByCityName } from './api.js';
 import { saveState, loadState } from './storage.js';
@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loader = createLoadingIndicator();
     appContainer.appendChild(loader);
     document.getElementById('app').appendChild(appContainer);
+
+    const footer = createFooter();
+    document.getElementById('app').appendChild(footer);
 
     const savedState = loadState();
     if (savedState && savedState.cities && savedState.cities.length > 0) {

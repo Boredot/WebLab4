@@ -121,6 +121,17 @@ export function createAutocompleteList(items, onSelect) {
     return list;
 }
 
+export function createFooter() {
+    const footer = createElement('footer', 'app-footer');
+    const footerText1 = createElement('p', 'footer-text', 'Semyon Shevchenko');
+    const footerText2 = createElement('p', 'footer-text', 'tg:@boredot');
+    const footerText3 = createElement('p', 'footer-text', '409886@niuitmo.ru');
+    footer.appendChild(footerText1);
+    footer.appendChild(footerText2);
+    footer.appendChild(footerText3);
+    return footer;
+}
+
 export function showError(element, message) {
     element.textContent = message;
     element.style.display = 'block';
