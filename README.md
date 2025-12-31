@@ -21,6 +21,7 @@ https://boredot.github.io/WebLab4/
 - footer!!!
 
 > once again separated all the logic, but this time tried to handle and throw errors. but honestly shouldn't have, now it's a mess. but oh well, it works and it's 6am so idc
+
 > also had to do this one fully in russian cuz decided it would be more logical to allow russian users to input their cities' names in their native tongue instead of transliterating them into english, and just the names in russian would've looked hella goofy. but there are still some issues cuz openweathermap only supports english names of some places(Zanevka, for example) which looks kinda ugly
 
 ## Personal Info
