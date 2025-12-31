@@ -41,7 +41,7 @@ export function createWeatherDisplay(weatherData) {
     return display;
 }
 
-export function createCityList(cities, onCitySelect, activeCityName) {
+export function createCityList(cities, onCitySelect, onDeleteCity, activeCityName) {
     const list = createElement('div', 'city-list');
     cities.forEach(city => {
         const cityItem = createElement('div', 'city-item');
@@ -51,6 +51,15 @@ export function createCityList(cities, onCitySelect, activeCityName) {
         }
         cityItem.addEventListener('click', () => onCitySelect && onCitySelect(city));
         list.appendChild(cityItem);
+
+        if (onDeleteCity) {
+             const deleteBtn = createElement('button', 'delete-city-btn', '×');
+             deleteBtn.addEventListener('click', (e) => {
+                 e.stopPropagation();
+                 onDeleteCity(city);
+             });
+             cityItem.appendChild(deleteBtn);
+        }
     });
     return list;
 }

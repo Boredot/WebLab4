@@ -55,6 +55,17 @@ function renderApp(container) {
     const cityList = createCityList(cityListData, (selectedCity) => {
         currentCityWeather = selectedCity;
         renderApp(container);
+    }, (cityToDelete) => {
+        cityListData = cityListData.filter(c => c !== cityToDelete);
+        if (currentCityWeather === cityToDelete) {
+            if (cityListData.length > 0) {
+                currentCityWeather = cityListData[0];
+            } else {
+                currentCityWeather = null;
+            }
+        }
+        saveState({ cities: cityListData });
+        renderApp(container);
     }, currentCityWeather ? currentCityWeather.name : null);
     container.appendChild(cityList);
 
@@ -77,7 +88,6 @@ function showAddCityModalWrapper(container) {
                 if (cityListData.some(c => (c.isCurrentLocation && c.originalName === nameToCheck) || (!c.isCurrentLocation && c.name === cityName))) {
                     throw new Error('Город уже добавлен');
                 }
-
                 const weatherResult = await getWeatherByCityName(cityName);
                 cityListData.push(weatherResult);
                 saveState({ cities: cityListData });
