@@ -87,8 +87,9 @@ function showAddCityModalWrapper(container) {
     const closeModalFunc = showAddCityModal(
         async (cityName, errorDisplay) => {
             try {
-                const nameToCheck = currentCityWeather?.isCurrentLocation ? currentCityWeather.originalName : cityName;
-                if (cityListData.some(c => (c.isCurrentLocation && c.originalName === nameToCheck) || (!c.isCurrentLocation && c.name === cityName))) {
+                if (cityListData.some(c => {
+                    return (c.isCurrentLocation ? c.originalName : c.name) === cityName;
+                })) {
                     throw new Error('Город уже добавлен');
                 }
                 const weatherResult = await getWeatherByCityName(cityName);
